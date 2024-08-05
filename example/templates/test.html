@@ -8,31 +8,42 @@
         <h1>Long polling test</h1>
         <h2>Result</h2>
         <div id="result">
-            <ul>
-            </ul>
+            <ul></ul>
         </div>
+        <button onclick="trigger()">Start Polling</button> <!-- Added button to trigger polling -->
+
         <script language="javascript">
             $(document).ready(function() {
-                var task_id;
+                var task_id = []; // Initialize task_id as an empty array
                 
                 var poll = function() {
+                    if (task_id.length === 0) {
+                        console.log("No tasks to poll.");
+                        return; // Exit if no tasks are available
+                    }
+
                     $.ajax({
                         url: '/poll',
                         dataType: 'json',
                         type: 'GET',
                         data: {ids: task_id.join(','), _t: new Date().getTime()},
                         success: function(data, status) {
-                            console.log(data);
+                            console.log("Polling data:", data);
                     
-                            if (!data.done)
-                                poll();
-                            else {
+                            if (!data.done) {
+                                setTimeout(poll, 2000); // Add delay between polling requests
+                            } else {
                                 var ul = $("#result ul");
-
+                                ul.empty(); // Clear previous results
+                                
                                 $.each(data.res, function(key, result) {
                                     ul.append("<li>" + key + ": " + result + "</li>");
                                 });
                             }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Polling error:", error);
+                            setTimeout(poll, 5000); // Retry after a delay on error
                         }
                     });
                 };
@@ -43,9 +54,12 @@
                         dataType: 'json',
                         type: 'GET',
                         success: function(data, status) {
-                            task_id = data['id']
-                            console.log(data);
+                            task_id = data['id'];
+                            console.log("Trigger data:", data);
                             poll();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Trigger error:", error);
                         }
                     });
                 };

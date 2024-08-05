@@ -1,22 +1,20 @@
-from django.conf.urls import patterns, include, url
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+# Import your views
+from example import views
 
-urlpatterns = patterns('',
-    # Examples:
-    url(r'^$', 'example.views.test', name='home'),
-    url(r'^trigger$', 'example.views.trigger', name='home'),
-    url(r'^poll$', 'example.views.poll', name='home'),
-    # url(r'^example/', include('example.foo.urls')),
+urlpatterns = [
+    path('', views.test, name='home'),
+    path('trigger/', views.trigger, name='trigger'),
+    path('poll/', views.poll, name='poll'),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    # Uncomment the following lines to enable the admin:
+    # path('admin/', admin.site.urls),
+]
 
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
-)
-
-urlpatterns += staticfiles_urlpatterns()
+# Serve static files in development (not for production use)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,7 +1,7 @@
-from celery import task
+from celery import shared_task
 import time
 
-@task()
+@shared_task
 def timeout(message, t):
     time.sleep(t)
     return message
