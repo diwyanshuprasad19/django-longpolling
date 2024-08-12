@@ -14,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 MANAGERS = ADMINS
 
+# Write your own database details here
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql', 'mysql', or 'oracle' if needed.
